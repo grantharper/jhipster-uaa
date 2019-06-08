@@ -1,0 +1,33 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.emersontechllc.recipe"
+    },
+    "jhipsterVersion": "6.0.1",
+    "applicationType": "uaa",
+    "baseName": "uaa",
+    "packageName": "com.emersontechllc.recipe",
+    "packageFolder": "com/emersontechllc/recipe",
+    "serverPort": "9999",
+    "authenticationType": "uaa",
+    "cacheProvider": "no",
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": "eureka",
+    "buildTool": "gradle",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "OTNjNjMwODExNDVlZjMyZmVkNzdjMjM3NTQ0YTEyZDI4MWZlY2EyZDUzMmIwMTg1Y2QzNmRmNDJjYjEzYzA2NGMzZDI2MzQzMzU1NDkyZDI2ODc3Y2JlYjRmODY3MTRkZTA1YzJmNmFmNjlhNjUzZTRlOWYzNDU1MjVjYmY0ZDc=",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "clientPackageManager": "npm",
+    "skipClient": true
+  }
+}
