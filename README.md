@@ -7,6 +7,57 @@ This is a "uaa" application intended to be part of a microservice architecture, 
 This is also a JHipster User Account and Authentication (UAA) Server, refer to [Using UAA for Microservice Security][] for details on how to secure JHipster microservices with OAuth2.
 This application is configured for Service Discovery and Configuration with the JHipster-Registry. On launch, it will refuse to start if it is not able to connect to the JHipster-Registry at [http://localhost:8761](http://localhost:8761). For more information, read our documentation on [Service Discovery and Configuration with the JHipster-Registry][].
 
+## Support for Authorization Code Flow
+
+Use browser to access the below url to simulate an oath client with client id `sampleClientId` and redirect uri `http://localhost:8080/ui/login` and the scope `openid`
+
+    http://localhost:9999/oauth/authorize?response_type=code&client_id=alexa&redirect_uri=http://localhost:8080/ui/login&scope=openid&state=1234
+
+
+A custom login page is hosted at `/login` which you will be forwarded to after accessing the above url.
+
+The default login credentials username=admin and password=admin can be used to login.
+
+After login, the browser is forwarded to the redirect uri with the auth code. The url would for example look as shown below.
+
+`http://localhost:8080/ui/login?code=V5A7lB&state=1234`
+
+To use the auth code, the server hosting the oauth client would then perform the following POST request
+
+    curl -u alexa:secret http://localhost:9999/oauth/token -d code=V5A7lB -d grant_type=authorization_code -d client_id=alexa -d client_secret=secret -d redirect_uri=http://localhost:8080/ui/login
+
+This will return a response like the one below
+
+```json
+{
+  "access_token" : "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbiIsInNjb3BlIjpbIm9wZW5pZCJdLCJleHAiOjE1NjEyNjUzMDUsImlhdCI6MTU2MTIyMjEwNSwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJqdGkiOiJmY2I4ZDg1Yi00NmFiLTQ3N2MtYmQzNS1mNTBhZWZjODlhZDAiLCJjbGllbnRfaWQiOiJhbGV4YSJ9.IWIW0-pwhJoguQFc6wo61HyzjUFOXPJMsu2NsXwQWo05xx3CbfTgAddRKcDBBcbdVhu2peKMiaszdGqRPHjBcyrbJdyFBH4W3SktZ-ETn7Q6brfbEtSMSbQ10jEJ4ECRtMZaUe-PH8OOkbzd1cKnzl5qnudH5e6nXUWJah0tKaSVI6c1l_NJNEgMZjqDYRdajTzFtNYsoV40xRAn1QKCsVe7V7lrmTR74t8pGLF2WLUyg6kAQdo7Q1YvaFmqp7QqN-yC0c_A-mjzS3VvASu6koKZRz6sbiJFuT3CZRy7l8Zffn_2cPXqccPvdYlZnlLsfDUihepU2c640KxfjmgTOA",
+  "token_type" : "bearer",
+  "expires_in" : 43199,
+  "scope" : "openid",
+  "iat" : 1561222105,
+  "jti" : "fcb8d85b-46ab-477c-bd35-f50aefc89ad0"
+}
+```
+
+The decoded token has the following information
+
+```json
+{
+  "user_name": "admin",
+  "scope": [
+    "openid"
+  ],
+  "exp": 1561265305,
+  "iat": 1561222105,
+  "authorities": [
+    "ROLE_ADMIN",
+    "ROLE_USER"
+  ],
+  "jti": "fcb8d85b-46ab-477c-bd35-f50aefc89ad0",
+  "client_id": "alexa"
+}
+```
+
 ## Development
 
 To start your application in the dev profile, simply run:

@@ -22,6 +22,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -139,7 +141,14 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
             .autoApprove(true)
             .authorizedGrantTypes("client_credentials")
             .accessTokenValiditySeconds((int) jHipsterProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSeconds())
-            .refreshTokenValiditySeconds((int) jHipsterProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSecondsForRememberMe());
+            .refreshTokenValiditySeconds((int) jHipsterProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSecondsForRememberMe())
+            .and()
+            .withClient("alexa")
+            .authorizedGrantTypes("authorization_code")
+            .secret(passwordEncoder.encode("secret"))
+            .scopes("openid")
+            .autoApprove(true)
+            .redirectUris("http://localhost:8080/ui/login");
     }
 
     @Override
@@ -151,9 +160,15 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter imple
         tokenEnhancerChain.setTokenEnhancers(new ArrayList<>(tokenEnhancers));
         endpoints
             .authenticationManager(authenticationManager)
+            .authorizationCodeServices(authorizationCodeServices())
             .tokenStore(tokenStore())
             .tokenEnhancer(tokenEnhancerChain)
             .reuseRefreshTokens(false);             //don't reuse or we will run into session inactivity timeouts
+    }
+
+    public AuthorizationCodeServices authorizationCodeServices() {
+        InMemoryAuthorizationCodeServices authorizationCodeServices = new InMemoryAuthorizationCodeServices();
+        return authorizationCodeServices;
     }
 
     @Autowired
